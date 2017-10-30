@@ -30,6 +30,7 @@ public class Combinators {
  compose(f, compose(f, compose(f, x->x)))
  compose(f, compose(f, x->x->2x))
  compose(f, x->x->2x->2x)
- x->x->2x->2x->2x
+ (x->x->2x->2x->2x).apply(10)
+
 
  */

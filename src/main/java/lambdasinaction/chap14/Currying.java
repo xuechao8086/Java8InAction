@@ -30,3 +30,8 @@ public class Currying {
         return (double x) -> (x + w) * y + z;
     }
 }
+
+/**
+ * think execution
+ * 24 * (9.0/5) + 32
+ */

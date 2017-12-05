@@ -18,6 +18,7 @@ public class ShopMain {
     try {
         double price = futurePrice.get();
         System.out.printf("Price is %.2f%n", price);
+    // 这个地方仔细考虑下
     } catch (ExecutionException | InterruptedException e) {
         throw new RuntimeException(e);
     }
@@ -30,3 +31,7 @@ public class ShopMain {
   }
 
 }
+/**
+ *
+ * 没啥新意
+ **/

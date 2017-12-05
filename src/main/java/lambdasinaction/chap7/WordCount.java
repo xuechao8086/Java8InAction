@@ -6,31 +6,45 @@ import java.util.stream.*;
 
 public class WordCount {
 
-    public static final String SENTENCE =
+    private static final String SENTENCE =
             " Nel   mezzo del cammin  di nostra  vita " +
             "mi  ritrovai in una  selva oscura" +
             " che la  dritta via era   smarrita ";
 
     public static void main(String[] args) {
-        System.out.println("Found " + countWordsIteratively(SENTENCE) + " words");
-        System.out.println("Found " + countWords(SENTENCE) + " words");
+        IntPredicate intPredicate1 = i -> i < 10;
+        IntPredicate intPredicate2 = i -> i > 0;
+        IntPredicate intPredicate3 = i -> i%2 != 0;
+
+        int total = IntStream.range(1, 100)
+            .filter(intPredicate1)
+            .filter(intPredicate2)
+            .filter(intPredicate3)
+            .sum();
+
+        assert total > 0;
+        //
+        //System.out.println("Found " + countWordsIteratively(SENTENCE) + " words");
+        //System.out.println("Found " + countWords(SENTENCE) + " words");
     }
 
-    public static int countWordsIteratively(String s) {
+    private static int countWordsIteratively(String s) {
         int counter = 0;
         boolean lastSpace = true;
         for (char c : s.toCharArray()) {
             if (Character.isWhitespace(c)) {
                 lastSpace = true;
             } else {
-                if (lastSpace) counter++;
+                if (lastSpace) {
+                    counter++;
+                }
                 lastSpace = Character.isWhitespace(c);
             }
         }
         return counter;
     }
 
-    public static int countWords(String s) {
+    private static int countWords(String s) {
         //Stream<Character> stream = IntStream.range(0, s.length())
         //                                    .mapToObj(SENTENCE::charAt).parallel();
         Spliterator<Character> spliterator = new WordCounterSpliterator(s);

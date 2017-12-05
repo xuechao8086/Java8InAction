@@ -64,3 +64,8 @@ public class PersistentTrainJourney {
         }
     }
 }
+
+/**
+ * see 14.2.1 破坏式更新和函数式更新的比较
+ * 更加多的是思考背后的设计原则
+ */

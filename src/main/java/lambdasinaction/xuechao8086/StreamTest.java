@@ -1,9 +1,11 @@
 package lambdasinaction.xuechao8086;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
@@ -59,7 +61,7 @@ public class StreamTest {
 
 
     private void testFunc4() {
-        List<String> result  = Stream.of("one", "two", "three", "four")
+        List<String> result  = Stream.of("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")
             .filter(e -> e.length() > 3)
             .peek(e -> System.out.println("Filtered value: " + e))
             .map(String::toUpperCase)
@@ -114,18 +116,15 @@ public class StreamTest {
 
 
 
-        List<String> list = IntStream.range(1, 1000).mapToObj(String::valueOf).collect(Collectors.toList());
+        List<String> list = IntStream.range(1, 100_000).mapToObj(String::valueOf).parallel().collect(Collectors.toList());
         List<String> result = list.parallelStream().collect(new ToListCollector<>());
 
         assert result.size() > 0;
     }
 
 
-
-
-
     @Test
-    private void testFunc6() {
+    public void testFunc6() {
         class WordCounter {
             private final int counter;
             private final boolean lastSpace;
@@ -206,9 +205,49 @@ public class StreamTest {
         Stream<Character> parallelStream = StreamSupport.stream(spliterator, true);
         WordCounter parallelWordCount = parallelStream.reduce(new WordCounter(0, true), WordCounter::accumulate, WordCounter::combine);
         System.out.println("Found " + parallelWordCount.getCounter() + " words");
+    }
+
+
+    @Test
+    public void testFunc7() {
+        String[] names = {"xuechao_zhao", "tingting_zhang"};
+
+        Set<String> stringSet = Arrays.stream(names)
+            .flatMap(p -> Arrays.stream(p.split("_")))
+            .collect(Collectors.toSet());
+
+        assert stringSet.size() == 4;
+    }
+
+
+    @Test
+    public void testFunc8() {
+        Function<Integer, Integer> f1 = i -> i*2;
+        Function<Integer, Integer> f2 = f1.compose(i -> i +1);
+
+        Integer r = f2.apply(10);
+        assert  r == 22;
 
     }
 
+
+    @Test
+    public void testFunc9() {
+        Arrays.asList(1, 2, 3, 4, 5, 6, 7, 9, 8, 0, 1)
+            .parallelStream()
+            .filter(i -> i%2 == 0)
+            .forEach(System.out::println);
+    }
+
+
+    @Test
+    public void testFunc10() {
+        Map<Integer, Integer> r = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
+            .filter(p ->  p > 5)
+            .collect(Collectors.toMap(p -> p, p -> 2*p, (a, b) -> b));
+
+        assert r.size() > 0;
+    }
 
     public static void main(String[] args) {
         System.out.println("== main func begin ==");
@@ -231,6 +270,12 @@ public class StreamTest {
         System.out.println("== next test ==");
 
         st.testFunc6();
+        System.out.println("== next test ==");
+
+        st.testFunc8();
+        System.out.println("== next test ==");
+
+        st.testFunc9();
         System.out.println("== next test ==");
 
         System.out.println("== main func ends ==");

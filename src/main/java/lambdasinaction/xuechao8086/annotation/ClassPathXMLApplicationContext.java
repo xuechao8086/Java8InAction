@@ -8,6 +8,7 @@ import org.dom4j.io.SAXReader;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,6 +22,12 @@ public class ClassPathXMLApplicationContext {
 
     List<BeanDefine> beanList = new ArrayList<>(2);
     Map<String, Object> sigletions;
+
+    public ClassPathXMLApplicationContext(String filename) throws Exception{
+        this.readXML(filename);
+        this.instancesBean();
+        this.annotationInject();
+    }
 
     //@SuppressWarnings("unchecked")
     public void readXML(String fileName) {
@@ -43,8 +50,14 @@ public class ClassPathXMLApplicationContext {
         sigletions = beanList.stream().collect(Collectors.toMap(BeanDefine::getId, this::newInstance));
     }
 
-    public void annotationInject() {
-
+    public void annotationInject() throws Exception{
+        for(String beanName:sigletions.keySet()){
+            Object bean = sigletions.get(beanName);
+            if(bean!=null){
+                this.propertyAnnotation(bean);
+                this.fieldAnnotation(bean);
+            }
+        }
     }
 
     private Object newInstance(BeanDefine beanDefine) {
@@ -86,5 +99,42 @@ public class ClassPathXMLApplicationContext {
                 setter.invoke(bean, value);
             }
         }
+    }
+
+    private void fieldAnnotation(Object bean) throws Exception{
+        Field[] fields = bean.getClass().getFields();
+        for(Field f : fields) {
+            if(f != null && f.isAnnotationPresent(ZxfResource.class)) {
+                ZxfResource resource = f.getAnnotation(ZxfResource.class);
+                String name = "";
+                Object value = null;
+
+                if(!"".equals(resource.name())) {
+                    name = resource.name();
+                    value = sigletions.get(name);
+                } else {
+                    Optional<Object> optional = sigletions.values()
+                        .stream()
+                        .filter(v -> f.getType().isAssignableFrom(v.getClass()))
+                        .findAny();
+                    if(optional.isPresent()) {
+                        value = optional.get();
+                    }
+                }
+                f.setAccessible(true);
+                f.set(bean, value);
+            }
+        }
+    }
+
+    public Object getBean(String beanId) {
+        return sigletions.get(beanId);
+    }
+
+    public static void main(String[] args) throws Exception{
+        String xml = "/Users/gumi/IdeaProjects/Java8InAction/src/main/java/lambdasinaction/xuechao8086/annotation/configAnnotation.xml";
+        ClassPathXMLApplicationContext path = new ClassPathXMLApplicationContext(xml);
+        UserServiceImpl userService =(UserServiceImpl)path.getBean("userService");
+        userService.show();
     }
 }

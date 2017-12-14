@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<beans>
+    <bean id = "userDao" class="lambdasinaction.xuechao8086.annotation.UserDaoImpl" />
+    <bean id = "userService" class="lambdasinaction.xuechao8086.annotation.UserServiceImpl"/>
+</beans>

@@ -25,7 +25,7 @@ public class ClassPathXMLApplicationContext {
     private Map<String, Object> sigletions;
     private Map<String, String> definitionMap;
 
-    ClassPathXMLApplicationContext(String filename) throws Exception{
+    private ClassPathXMLApplicationContext(String filename) throws Exception{
         //this.readXML(filename);
         this.loadDefinition();
         this.readDefinition();
@@ -85,7 +85,7 @@ public class ClassPathXMLApplicationContext {
         }
     }
 
-    public void annotationInject() throws Exception{
+    private void annotationInject() throws Exception{
         for(String beanName:sigletions.keySet()){
             Object bean = sigletions.get(beanName);
             if(bean!=null){
@@ -162,14 +162,15 @@ public class ClassPathXMLApplicationContext {
         }
     }
 
-    public Object getBean(String beanId) {
-        return sigletions.get(beanId);
+    @SuppressWarnings("unchecked")
+    private  <T> T getBean(String beanId) {
+        return (T)sigletions.get(beanId);
     }
 
     public static void main(String[] args) throws Exception{
-        String xml = "/Users/gumi/IdeaProjects/Java8InAction/src/main/java/lambdasinaction/xuechao8086/annotation/ClassPathXMLApplicationContext.java";
+        String xml = "configAnnotation.xml";
         ClassPathXMLApplicationContext path = new ClassPathXMLApplicationContext(xml);
-        UserServiceImpl userService =(UserServiceImpl)path.getBean("userService");
+        UserServiceImpl userService = path.getBean("userService");
         userService.show();
     }
 }

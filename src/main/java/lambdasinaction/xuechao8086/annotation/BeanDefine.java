@@ -8,6 +8,9 @@ public class BeanDefine {
     public String id;
     public String className;
 
+    public BeanDefine() {
+    }
+
     public BeanDefine(String id, String className) {
         this.id = id;
         this.className = className;

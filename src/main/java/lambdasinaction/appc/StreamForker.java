@@ -36,17 +36,17 @@ public class StreamForker<T> {
         List<BlockingQueue<T>> queues = new ArrayList<>();
 
         Map<Object, Future<?>> actions =
-                forks.entrySet().stream().reduce(
-                        new HashMap<Object, Future<?>>(),
-                        (map, e) -> {
-                            map.put(e.getKey(),
-                                    getOperationResult(queues, e.getValue()));
-                            return map;
-                        },
-                        (m1, m2) -> {
-                            m1.putAll(m2);
-                            return m1;
-                        });
+            forks.entrySet().stream().reduce(
+                new HashMap<Object, Future<?>>(),
+                (map, e) -> {
+                    map.put(e.getKey(),
+                        getOperationResult(queues, e.getValue()));
+                    return map;
+                },
+                (m1, m2) -> {
+                    m1.putAll(m2);
+                    return m1;
+                });
 
         return new ForkingStreamConsumer<>(queues, actions);
     }
@@ -56,7 +56,7 @@ public class StreamForker<T> {
         queues.add(queue);
         Spliterator<T> spliterator = new BlockingQueueSpliterator<>(queue);
         Stream<T> source = StreamSupport.stream(spliterator, false);
-        return CompletableFuture.supplyAsync( () -> f.apply(source) );
+        return CompletableFuture.supplyAsync(() -> f.apply(source));
     }
 
     public interface Results {
@@ -82,14 +82,14 @@ public class StreamForker<T> {
         @Override
         public <R> R get(Object key) {
             try {
-                return ((Future<R>) actions.get(key)).get();
+                return ((Future<R>)actions.get(key)).get();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
 
         void finish() {
-            accept((T) END_OF_STREAM);
+            accept((T)END_OF_STREAM);
         }
     }
 
@@ -107,8 +107,7 @@ public class StreamForker<T> {
                 try {
                     t = q.take();
                     break;
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                 }
             }
 

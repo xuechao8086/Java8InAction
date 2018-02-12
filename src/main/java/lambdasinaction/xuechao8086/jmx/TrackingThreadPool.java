@@ -9,6 +9,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * https://www.ibm.com/developerworks/cn/java/j-jtp09196/index.html
  * @author gumi
  * @since 2018/02/12 10:51
  */

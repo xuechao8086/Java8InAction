@@ -1,26 +1,10 @@
 package lambdasinaction.xuechao8086;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.Spliterator;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
 import org.junit.Test;
+
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
 
 /**
  * 主要是测试本书中jdk8的各种语言特性，确定是否实际使用该特性
@@ -49,8 +33,8 @@ public class StreamTest {
         Stream.iterate(0, n -> n + 1).limit(10).forEach(System.out::println);
     }
 
-
-    private void testFunc3() {
+    @Test
+    public void testFunc3() {
         Supplier<String> supplier = () -> {
             int index = (int)Math.round(Math.random())% names.length;
             return names[index];

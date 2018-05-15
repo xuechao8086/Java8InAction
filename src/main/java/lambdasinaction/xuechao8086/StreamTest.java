@@ -1,7 +1,10 @@
 package lambdasinaction.xuechao8086;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -232,6 +235,19 @@ public class StreamTest {
 
         assert r.size() > 0;
     }
+
+    @Test
+    public void testFunc11() throws Exception{
+        String filePath = "/Users/gumi/Downloads/t.txt";
+        Map<String, Long> map = Files.lines(Paths.get(filePath))
+            .parallel()
+            .filter(l -> StringUtils.containsIgnoreCase(l, "alibaba"))
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        map.forEach((k, v) -> System.out.println(v + "\t" + k));
+
+    }
+
 
     public static void main(String[] args) {
         System.out.println("== main func begin ==");

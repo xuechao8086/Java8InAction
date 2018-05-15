@@ -182,4 +182,10 @@ public class CollectionTestDemo {
         IterableUtils.forEach(goodsList, ifClo);
     }
 
+    @Test
+    public void testStream() {
+        //List<Integer> numbers = Stream.of(1, 2, 3, 4)
+        //    .reduce(new ArrayList<Integer>(10), (list, element) -> list.add(element), (l1, l2) -> l1.addAll(l2));
+    }
+
 }

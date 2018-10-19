@@ -1,11 +1,14 @@
 package lambdasinaction.xuechao8086.graph;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.ImmutableList;
-import com.google.common.graph.GraphBuilder;
-import com.google.common.graph.MutableGraph;
-import com.google.common.graph.MutableNetwork;
-import com.google.common.graph.NetworkBuilder;
+import com.google.common.graph.*;
 import lambdasinaction.xuechao8086.model.Node;
+import net.minidev.json.JSONUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,6 +21,13 @@ import java.util.Set;
  * @since 2018/08/29 14:27
  */
 public class GraphTest {
+
+    @Test
+    public void testGraph2() {
+        MutableGraph<String> graph = GraphBuilder.directed()
+            .allowsSelfLoops(false)
+            .build();
+    }
 
     @Test
     public void testGraph() {
@@ -46,6 +56,28 @@ public class GraphTest {
         });
 
 
+        ImmutableGraph<Node> immutableGraph = ImmutableGraph.copyOf(graph);
+
+        String graphToString = immutableGraph.toString();
+        Assert.assertTrue(StringUtils.isNotBlank(graphToString));
+
+        Set<Node> nodes = immutableGraph.nodes();
+        Set<EndpointPair<Node>> edges = immutableGraph.edges();
+
+        ImmutablePair<Set<Node>, Set<EndpointPair<Node>>> pair = ImmutablePair.of(nodes, edges);
+        String pairContent = JSONObject.toJSONString(pair);
+        Assert.assertTrue(StringUtils.isNotBlank(pairContent));
+
+        ImmutablePair<Set<Node>, Set<EndpointPair<Node>>> pairFromJson = JSONObject.parseObject(pairContent, new TypeReference<ImmutablePair<Set<Node>, Set<EndpointPair<Node>>>>(){});
+        Assert.assertNotNull(pairFromJson);
+
+
+        // 已经确定graph不能序列化
+        String graphContent = JSONObject.toJSONString(immutableGraph);
+        Assert.assertTrue(StringUtils.isNotBlank(graphContent));
+
+        ImmutableGraph<Node> immutableGraphFromJson = JSONObject.parseObject(graphContent, new TypeReference<ImmutableGraph<Node>>(){});
+        Assert.assertTrue(immutableGraphFromJson.nodes().size() > 0);
     }
 
     @Test

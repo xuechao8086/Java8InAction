@@ -1,5 +1,6 @@
 package lambdasinaction.xuechao8086.guava;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.*;
 import lambdasinaction.xuechao8086.guava.model.Employee;
 import lambdasinaction.xuechao8086.guava.model.Goods;
@@ -11,8 +12,12 @@ import org.apache.commons.collections4.list.PredicatedList;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +30,39 @@ import java.util.stream.IntStream;
  * @since 2018/04/13 10:26
  */
 public class CollectionTestDemo {
+
+    @Test
+    public void testJson2() throws IOException {
+        String path = "/Users/gumi/Downloads/t.json";
+        String content = Files.lines(Paths.get(path)).collect(Collectors.joining());
+        JSONObject.parseObject(content);
+    }
+
+
+    @Test
+    public void testJson() {
+        Map<String, Integer> map = ImmutableMap.of(
+            "latourhost", 3,
+            "juhost", 3,
+            "mtophost", 3
+        );
+        String content = JSONObject.toJSONString(map);
+
+        Assert.assertTrue(StringUtils.isNotBlank(content));
+    }
+
+
+    @Test
+    public void testStr() {
+        String line = "交易,新零售供应链平台事业部,warehouserouteservice,warehouserouteservice_deliveryhost,4-8-60,37,37,32 "
+            + ",14 ,19 ,37,6 ,6 ,,,50,50,-44 ,-44 ,,13,18,18";
+        String[] arr = line.split(",", -1);
+
+        Assert.assertTrue(arr.length > 0);
+
+
+    }
+
 
     /**
      * guava multimap
